@@ -126,7 +126,7 @@ io.on('connection', function(socket) {
         console.log('Start raspistill');
         var stream = ss.createStream();
         ss(socket).emit('picture', stream);
-        proc = spawn('raspistill', args, { stdio: stream });
+        proc = spawn('raspistill', args, { stdio: [null, null, null, stream] });
         console.log('End raspistill');
         /*
         proc.on('exit', function () {
