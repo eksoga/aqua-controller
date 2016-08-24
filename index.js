@@ -2,10 +2,10 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var fs = require('fs');
-var path = require('path');
-var sensor = require('ds18x20');
-var moment = require('moment');
+//var fs = require('fs');
+//var path = require('path');
+//var sensor = require('ds18x20');
+//var moment = require('moment');
 
 var spawn = require('child_process').spawn;
 var child_process = require('child_process');
@@ -13,6 +13,7 @@ var child_process = require('child_process');
 var config = require('./config');
 
 var proc;
+/*
 var sensorObjects = [];
 
 var sensorLib = require("node-dht-sensor");
@@ -72,7 +73,7 @@ function readSensors() {
 
     return dataSensors;
 }
-
+*/
 
 
 app.use('/', express.static(path.join(__dirname, 'temp')));
@@ -90,7 +91,7 @@ io.on('connection', function(socket) {
     sockets[socket.id] = socket;
     console.log("Total clients connected : ", Object.keys(sockets).length);
 
-    socket.emit('currentTime', currentTimeStr);
+    /*socket.emit('currentTime', currentTimeStr);
     socket.emit('clientInit', config.get('channels'));
 
     socket.on('disconnect', function() {
@@ -102,7 +103,7 @@ io.on('connection', function(socket) {
         config.set('channels:' + data.channel + ':value', data.value);
         config.save();
     });
-
+    */
     socket.on('get-picture', function() {
         console.log("get-picture");
         /*fs.watchFile('./temp/image_stream.jpg', function(current, previous) {
@@ -153,7 +154,7 @@ io.on('connection', function(socket) {
 http.listen(config.get('port'), function() {
     console.log('listening on *:' + config.get('port'));
 });
-
+/*
 var timerId = setInterval(function() {
     var t = readSensors();
     io.sockets.emit('tempChange', t);
@@ -167,3 +168,4 @@ var timeTimerId = setInterval(function() {
     }
 }, 1000);
 
+*/
