@@ -21,11 +21,12 @@
     }
   },
   "scheduler": {
-    "light": {
-      "beginON": "10:00",
-      "finishON": "12:03",
-      "beginOFF": "22:00",
-      "finishOFF": "0:23"
-    }
+    "light": [
+      {"time": "10:00", "level": 0},
+      {"time": "12:03", "level": 100},
+      {"time": "16:00", "level": 90},
+      {"time": "22:00", "level": 100},
+      {"time": "0:23", "level": 0}
+    ]
   }
 }
