@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stream My Aquarium</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+  <style type="text/css">
+    #stream {
+      height: 99%;
+      margin: 0px auto;
+      display: block;
+      margin-top: 20px;
+    }
+
+    #sliderBlue .ui-slider-range { background: #729fcf; }
+    #sliderBlue .ui-slider-handle { border-color: #729fcf; }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    $(function() {
+      $(".slider").slider({
+        slide: function( event, ui ) {
+          var id = this.id;
+          socket.emit('dimming', {
+            channel: id,
+            value: ui.value,
+          });
+        }
+      });
+    });
+
+    var socket = io();
+
+    socket.on('liveStream', function(url) {
+      $('#stream').attr('src', url);
+      $('.start').hide();
+    });
+
+    socket.on('currentTime', function(str) {
+      $('#serverTime').text(str);
+    });
+
+    socket.on('clientInit', function(data) {
+      console.log(data);
+      for (var channelId in data){
+        $('#' + channelId).slider({value: data[channelId].value})
+      }
+      //$('#' + value.channel).slider({value: value.value})
+    });
+
+    socket.on('dimming', function(value) {
+
+      $('#' + value.channel).slider({value: value.value})
+    });
+
+    socket.on('tempChange', function(sensors) {
+      var html = '';
+      console.log(sensors);
+      if ( sensors.length > 0) {
+        for (var i = 0; i < sensors.length; i++) {
+            let sensor = sensors[i];
+            if (typeof sensor == 'object') {
+                console.log(sensor.name);
+                let name = sensor.address;
+                let value = sensor.temperature + (sensor.humidity ? ' / ' + sensor.humidity + '%' : '');
+                html += '<dt>' + name + '</dt>'
+                  + '<dd>' + value + '</dd>';
+            }
+        }
+        if (html) {
+          html = '<dl class="dl-horizontal">' + html + '</dl>';
+        }
+      }
+      $('#temps').html(html);
+    });
+
+    function startStream() {
+      socket.emit('start-stream');
+      $('.start').hide();
+    }
+
+
+  </script>
+</head>
+
+<body class="container">
+  <h1 class="text-center">My Aquarium
+    <small>Powered by PI</small>
+  </h1>
+  <hr>
+  <div id="serverTime"></div>
+  <div id="temps"></div>
+  <div>
+    <dl class="dl-horizontal">
+      <dt>RB</dt>
+      <dd><div id="sliderRoyalBlue" class="slider"></div></dd>
+      <dt>White</dt>
+      <dd><div id="sliderWhite" class="slider"></div></dd>
+      <dt>Blue</dt>
+      <dd><div id="sliderBlue" class="slider"></div></dd>
+    </dl>
+  </div>
+  <button type="button" id="" class="btn btn-info start" onclick="startStream()">Start Camera</button>
+
+  <div class="row">
+    <img src="" id="stream">
+  </div>
+
+</body>
+
+</html>
