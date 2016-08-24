@@ -139,7 +139,7 @@ io.on('connection', function(socket) {
         proc.stdout.on('data', function(data) {
             console.log('stdout: ${dt}');
             ss(socket).emit('picture', stream);
-            data.pipe(stream);
+            data(stream);
             //socket.emit('picture', data.toString('base64'));
         });
         console.log('event on close');
