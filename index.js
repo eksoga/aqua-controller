@@ -137,7 +137,7 @@ io.on('connection', function(socket) {
                     console.log('This is error!!!');
                     throw err;
                 }
-                console.log(stdout);
+                //console.log(stdout);
                 io.sockets.emit('picture', stdout);
             });
         /*
