@@ -44,12 +44,13 @@
 
     socket.on('picture', function(url) {
         $('#stream').attr('src', url);
-        $('.start').show();
+        $('.start').attr('disabled', 'disabled');
     });
 
     function getPicture() {
         socket.emit('get-picture');
-        $('.start').hide();
+        $('.start').removeAttr('disabled');
+        $('#stream').attr('src', '');
     }
 
     socket.on('currentTime', function(str) {
