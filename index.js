@@ -85,22 +85,15 @@ var currentTimeStr = moment().format('LLLL');
 
 io.on('connection', function(socket) {
 
-  sockets[socket.id] = socket;
-  console.log("Total clients connected : ", Object.keys(sockets).length);
+    sockets[socket.id] = socket;
+    console.log("Total clients connected : ", Object.keys(sockets).length);
 
-  socket.emit('currentTime', currentTimeStr);
-  socket.emit('clientInit', config.get('channels'));
+    socket.emit('currentTime', currentTimeStr);
+    socket.emit('clientInit', config.get('channels'));
 
-  socket.on('disconnect', function() {
-    delete sockets[socket.id];
-
-    // no more sockets, kill the stream
-    if (Object.keys(sockets).length == 0) {
-      app.set('watchingFile', false);
-      if (proc) proc.kill();
-      fs.unwatchFile('./stream/image_stream.jpg');
-    }
-  });
+    socket.on('disconnect', function() {
+        delete sockets[socket.id];
+    });
 
     socket.on('dimming', function(data) {
         socket.broadcast.emit('dimming', data);
@@ -109,15 +102,16 @@ io.on('connection', function(socket) {
     });
 
     socket.on('getPicture', function() {
-        fs.watchFile('./stream/image_stream.jpg', function(current, previous) {
-            fs.unwatchFile('./stream/image_stream.jpg');
+        console.log("getPicture");
+        fs.watchFile('./temp/image_stream.jpg', function(current, previous) {
+            fs.unwatchFile('./temp/image_stream.jpg');
             io.sockets.emit('picture', 'image_stream.jpg?_t=' + (Math.random() * 100000));
         });
         var args = [
             "-n", "",
             "-w", "640",
             "-h", "480",
-            "-o", "./stream/image_stream.jpg",
+            "-o", "./temp/image_stream.jpg",
         ];
         proc = spawn('raspistill', args);
   });
@@ -125,27 +119,19 @@ io.on('connection', function(socket) {
 });
 
 http.listen(config.get('port'), function() {
-  console.log('listening on *:' + config.get('port'));
+    console.log('listening on *:' + config.get('port'));
 });
 
 var timerId = setInterval(function() {
-  var t = readSensors();
-  io.sockets.emit('tempChange', t);
+    var t = readSensors();
+    io.sockets.emit('tempChange', t);
 }, 3000);
 
 var timeTimerId = setInterval(function() {
-  var t = moment().format('LLLL');
-  if (t.localeCompare(currentTimeStr) !== 0) {
-      currentTimeStr = t;
-      io.sockets.emit('currentTime', currentTimeStr);
-  }
+    var t = moment().format('LLLL');
+    if (t.localeCompare(currentTimeStr) !== 0) {
+        currentTimeStr = t;
+        io.sockets.emit('currentTime', currentTimeStr);
+    }
 }, 1000);
-
-function stopStreaming() {
-  if (Object.keys(sockets).length == 0) {
-    app.set('watchingFile', false);
-    if (proc) proc.kill();
-    fs.unwatchFile('./stream/image_stream.jpg');
-  }
-}
 
