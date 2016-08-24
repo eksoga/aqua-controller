@@ -148,3 +148,11 @@ var timeTimerId = setInterval(function() {
     }
 }, 1000);
 
+(function () {
+    var beginON = moment(config.get('scheduler:light:beginON'), "hh:mm");
+    var finishON = moment(config.get('scheduler:light:finishON'), "hh:mm");
+    var beginOFF = moment(config.get('scheduler:light:beginOFF'), "hh:mm");
+    var finishOFF = moment(config.get('scheduler:light:finishOFF'), "hh:mm");
+    
+    
+})()

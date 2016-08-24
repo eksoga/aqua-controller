@@ -19,5 +19,13 @@
       "type": "DHT",
       "model": 11
     }
+  },
+  "scheduler": {
+    "light": {
+      "beginON": "10:00",
+      "finishON": "12:03",
+      "beginOFF": "22:00",
+      "finishOFF": "0:23"
+    }
   }
 }
