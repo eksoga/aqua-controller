@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 //var fs = require('fs');
-//var path = require('path');
+var path = require('path');
 //var sensor = require('ds18x20');
 //var moment = require('moment');
 
