@@ -104,12 +104,13 @@ io.on('connection', function(socket) {
     socket.on('get-picture', function() {
         console.log("get-picture");
         fs.watchFile('./temp/image_stream.jpg', function(current, previous) {
-            fs.unwatchFile('./temp/image_stream.jpg');
+            //fs.unwatchFile('./temp/image_stream.jpg');
             io.sockets.emit('picture', 'image_stream.jpg?_t=' + (Math.random() * 100000));
-            if (proc) proc.kill();
+            //if (proc) proc.kill();
         });
         var args = [
-            "-t", "1",
+            "-t", "30000",
+            "-tl", "1000",
             "-w", "640",
             "-h", "480",
             "-a", "4",
