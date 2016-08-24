@@ -42,8 +42,9 @@
 
     var socket = io();
 
-    socket.on('picture', function(url) {
-        $('#stream').attr('src', url);
+    socket.on('picture', function(image) {
+        //$('#stream').attr('src', url);
+        $('#stream').attr('src', 'data:image/jpg;base64,' + image);
         $('.start').removeAttr('disabled');
     });
 
