@@ -75,7 +75,6 @@ function readSensors() {
 
 app.use('/', express.static(path.join(__dirname, 'stream')));
 
-
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -103,45 +102,24 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('dimming', function(data) {
-    socket.broadcast.emit('dimming', data);
-    config.set('channels:' + data.channel + ':value', data.value);
-    config.save();
-  });
-
-  socket.on('start-stream', function() {
-    if (app.get('watchingFile')) {
-      io.sockets.emit('liveStream', 'image_stream.jpg?_t=' + (Math.random() * 100000));
-      return;
-    }
-
-    var args = [
-        //"-n", "",
-      "-w", "640",
-      "-h", "480",
-      "-o", "-",
-      //"-t", "999999999",
-      //"-tl", "100",
-
-    ];
-    proc = spawn('raspistill', args);
-
-      var data = '';
-
-      stream.on('readable', function() {
-          data += stream.read().toString('base64');
-      });
-      stream.on('end', function() {
-          console.log(data);
-      });
-
-    console.log('Watching for changes...');
-
-    app.set('watchingFile', true);
-
-    fs.watchFile('./stream/image_stream.jpg', function(current, previous) {
-      io.sockets.emit('liveStream', 'image_stream.jpg?_t=' + (Math.random() * 100000));
+    socket.on('dimming', function(data) {
+        socket.broadcast.emit('dimming', data);
+        config.set('channels:' + data.channel + ':value', data.value);
+        config.save();
     });
+
+    socket.on('getPicture', function() {
+        fs.watchFile('./stream/image_stream.jpg', function(current, previous) {
+            fs.unwatchFile('./stream/image_stream.jpg');
+            io.sockets.emit('picture', 'image_stream.jpg?_t=' + (Math.random() * 100000));
+        });
+        var args = [
+            "-n", "",
+            "-w", "640",
+            "-h", "480",
+            "-o", "./stream/image_stream.jpg",
+        ];
+        proc = spawn('raspistill', args);
   });
 
 });

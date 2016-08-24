@@ -42,26 +42,29 @@
 
     var socket = io();
 
-    socket.on('liveStream', function(url) {
-      $('#stream').attr('src', url);
-      $('.start').hide();
+    socket.on('picture', function(url) {
+        $('#stream').attr('src', url);
+        $('.start').show();
     });
+
+    function getPicture() {
+        socket.emit('get-picture');
+        $('.start').hide();
+    }
 
     socket.on('currentTime', function(str) {
       $('#serverTime').text(str);
     });
 
     socket.on('clientInit', function(data) {
-      console.log(data);
-      for (var channelId in data){
-        $('#' + channelId).slider({value: data[channelId].value})
-      }
-      //$('#' + value.channel).slider({value: value.value})
+        console.log(data);
+        for (var channelId in data){
+            $('#' + channelId).slider({value: data[channelId].value})
+        }
     });
 
     socket.on('dimming', function(value) {
-
-      $('#' + value.channel).slider({value: value.value})
+        $('#' + value.channel).slider({value: value.value})
     });
 
     socket.on('tempChange', function(sensors) {
@@ -84,13 +87,6 @@
       }
       $('#temps').html(html);
     });
-
-    function startStream() {
-      socket.emit('start-stream');
-      $('.start').hide();
-    }
-
-
   </script>
 </head>
 
@@ -111,7 +107,7 @@
       <dd><div id="sliderBlue" class="slider"></div></dd>
     </dl>
   </div>
-  <button type="button" id="" class="btn btn-info start" onclick="startStream()">Start Camera</button>
+  <button type="button" id="" class="btn btn-info start" onclick="getPicture()">Get Picture</button>
 
   <div class="row">
     <img src="" id="stream">
