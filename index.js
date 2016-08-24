@@ -124,7 +124,9 @@ io.on('connection', function(socket) {
         ];
 
         console.log('Start raspistill');
-        proc = spawn('raspistill', args, { stdio: 'inherit' });
+        ss(socket).emit('picture', stream);
+        var stream = ss.createStream();
+        proc = spawn('raspistill', args, { stdio: stream });
         console.log('End raspistill');
         /*
         proc.on('exit', function () {
@@ -134,12 +136,11 @@ io.on('connection', function(socket) {
             });
         });
         */
-        var stream = ss.createStream();
         console.log('event on data');
         proc.stdout.on('data', function(data) {
-            console.log('stdout: ${dt}');
-            ss(socket).emit('picture', stream);
-            data.pipe(stream);
+            //console.log('stdout: ${dt}');
+
+            //data.pipe(stream);
             //socket.emit('picture', data.toString('base64'));
         });
         console.log('event on close');
