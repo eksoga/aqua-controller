@@ -109,6 +109,7 @@ io.on('connection', function(socket) {
             if (proc) proc.kill();
         });
         var args = [
+            "-t", "1",
             "-w", "640",
             "-h", "480",
             "-a", "4",
