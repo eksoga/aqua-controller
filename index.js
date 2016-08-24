@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var ss = require('socket.io-stream');
 //var fs = require('fs');
 var path = require('path');
 //var sensor = require('ds18x20');
@@ -112,7 +113,7 @@ io.on('connection', function(socket) {
             //if (proc) proc.kill();
         });*/
         var args = [
-            //"-t", "0",
+            //"-t", "1",
             //"-tl", "1000",
             "-w", "640",
             "-h", "480",
@@ -131,9 +132,12 @@ io.on('connection', function(socket) {
             });
         });
         */
+        var stream = ss.createStream();
         proc.stdout.on('data', function(data) {
             console.log('stdout: ${dt}');
-            socket.emit('picture', data.toString('base64'));
+            ss(socket).emit('picture', stream);
+            data.pipe(stream);
+            //socket.emit('picture', data.toString('base64'));
         });
         proc.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
