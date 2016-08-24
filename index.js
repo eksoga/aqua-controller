@@ -115,8 +115,8 @@ io.on('connection', function(socket) {
             //"-tl", "1000",
             "-w", "640",
             "-h", "480",
-            "-a", "4",
-            "-a", "%Y-%m-%d %X",
+            //"-a", "4",
+            //"-a", "%Y-%m-%d %X",
             //"-o", "./temp/image_stream.jpg",
             "-o", "-",
         ];
