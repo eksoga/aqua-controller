@@ -8,6 +8,8 @@ var sensor = require('ds18x20');
 var moment = require('moment');
 
 var spawn = require('child_process').spawn;
+var child_process = require('child_process');
+
 var config = require('./config');
 
 var proc;
@@ -115,8 +117,10 @@ io.on('connection', function(socket) {
             "-h", "480",
             "-a", "4",
             "-a", "%Y-%m-%d %X",
-            "-o", "./temp/image_stream.jpg",
+            //"-o", "./temp/image_stream.jpg",
+            "-o", "--",
         ];
+        /*
         proc = spawn('raspistill', args);
         proc.on('exit', function () {
             console.log("send picture");
@@ -124,6 +128,22 @@ io.on('connection', function(socket) {
                 io.sockets.emit('picture', buffer.toString('base64'));
             });
         });
+        */
+        var cmd = 'raspistill ' + args.join(' ');
+        child_process.exec(cmd,
+            { encoding?: 'base64'},
+            function (err, stdout, stderr) {
+                if (err) {
+                    throw err;
+                }
+                console.log(stdout);
+                io.sockets.emit('picture', data);
+            });
+        /*
+        proc.stdout.on('data', function(data) {
+            io.sockets.emit('picture', data);
+        });
+        */
   });
 
 });
