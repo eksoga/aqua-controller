@@ -83,8 +83,8 @@ app.get('/', function(req, res) {
 });
 
 var sockets = {};
-moment.locale('ru');
-var currentTimeStr = moment().format('LLLL');
+//moment.locale('ru');
+//var currentTimeStr = moment().format('LLLL');
 
 io.on('connection', function(socket) {
 
