@@ -123,7 +123,9 @@ io.on('connection', function(socket) {
             "-o", "-",
         ];
 
+        console.log('Start raspistill');
         proc = spawn('raspistill', args);
+        console.log('End raspistill');
         /*
         proc.on('exit', function () {
             console.log("send picture");
