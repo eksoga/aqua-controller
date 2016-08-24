@@ -2,11 +2,10 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var ss = require('socket.io-stream');
 //var fs = require('fs');
 var path = require('path');
-//var sensor = require('ds18x20');
-//var moment = require('moment');
+var sensor = require('ds18x20');
+var moment = require('moment');
 
 var spawn = require('child_process').spawn;
 var child_process = require('child_process');
@@ -14,7 +13,7 @@ var child_process = require('child_process');
 var config = require('./config');
 
 var proc;
-/*
+
 var sensorObjects = [];
 
 var sensorLib = require("node-dht-sensor");
@@ -74,8 +73,6 @@ function readSensors() {
 
     return dataSensors;
 }
-*/
-
 
 app.use('/', express.static(path.join(__dirname, 'temp')));
 
@@ -84,15 +81,15 @@ app.get('/', function(req, res) {
 });
 
 var sockets = {};
-//moment.locale('ru');
-//var currentTimeStr = moment().format('LLLL');
+moment.locale('ru');
+var currentTimeStr = moment().format('LLLL');
 
 io.on('connection', function(socket) {
 
     sockets[socket.id] = socket;
     console.log("Total clients connected : ", Object.keys(sockets).length);
 
-    /*socket.emit('currentTime', currentTimeStr);
+    socket.emit('currentTime', currentTimeStr);
     socket.emit('clientInit', config.get('channels'));
 
     socket.on('disconnect', function() {
@@ -104,14 +101,10 @@ io.on('connection', function(socket) {
         config.set('channels:' + data.channel + ':value', data.value);
         config.save();
     });
-    */
+
     socket.on('get-picture', function() {
         console.log("get-picture");
-        /*fs.watchFile('./temp/image_stream.jpg', function(current, previous) {
-            //fs.unwatchFile('./temp/image_stream.jpg');
-            io.sockets.emit('picture', 'image_stream.jpg?_t=' + (Math.random() * 100000));
-            //if (proc) proc.kill();
-        });*/
+
         var args = [
             //"-t", "1",
             //"-tl", "1000",
@@ -123,32 +116,6 @@ io.on('connection', function(socket) {
             "-o", "-",
         ];
 
-        console.log('Start raspistill');
-        var stream = ss.createStream();
-        ss(socket).emit('picture', stream);
-        proc = spawn('raspistill', args, { stdio: [null, null, null, stream] });
-        console.log('End raspistill');
-        /*
-        proc.on('exit', function () {
-            console.log("send picture");
-            fs.readFile("./temp/image_stream.jpg", function(err, buffer){
-                io.sockets.emit('picture', buffer.toString('base64'));
-            });
-        });
-        */
-        console.log('event on data');
-        proc.stdout.on('data', function(data) {
-            //console.log('stdout: ${dt}');
-
-            //data.pipe(stream);
-            //socket.emit('picture', data.toString('base64'));
-        });
-        console.log('event on close');
-        proc.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-        });
-
-        /*
         var cmd = 'raspistill ' + args.join(' ');
         child_process.exec(cmd,
             { encoding: 'base64'},
@@ -158,10 +125,8 @@ io.on('connection', function(socket) {
                     throw err;
                 }
                 console.log("Send picture >>>");
-                //console.log(stdout);
                 io.sockets.emit('picture', stdout);
             });
-        */
   });
 
 });
@@ -169,7 +134,7 @@ io.on('connection', function(socket) {
 http.listen(config.get('port'), function() {
     console.log('listening on *:' + config.get('port'));
 });
-/*
+
 var timerId = setInterval(function() {
     var t = readSensors();
     io.sockets.emit('tempChange', t);
@@ -183,4 +148,3 @@ var timeTimerId = setInterval(function() {
     }
 }, 1000);
 
-*/
