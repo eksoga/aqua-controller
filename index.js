@@ -131,7 +131,7 @@ io.on('connection', function(socket) {
         */
         var cmd = 'raspistill ' + args.join(' ');
         child_process.exec(cmd,
-            { encoding?: 'base64'},
+            { encoding: 'base64'},
             function (err, stdout, stderr) {
                 if (err) {
                     throw err;
