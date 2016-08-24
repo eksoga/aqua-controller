@@ -135,12 +135,14 @@ io.on('connection', function(socket) {
         });
         */
         var stream = ss.createStream();
+        console.log('event on data');
         proc.stdout.on('data', function(data) {
             console.log('stdout: ${dt}');
             ss(socket).emit('picture', stream);
             data.pipe(stream);
             //socket.emit('picture', data.toString('base64'));
         });
+        console.log('event on close');
         proc.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
         });
