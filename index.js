@@ -109,7 +109,6 @@ io.on('connection', function(socket) {
             if (proc) proc.kill();
         });
         var args = [
-            "-n", "",
             "-w", "640",
             "-h", "480",
             "-o", "./temp/image_stream.jpg",
