@@ -50,7 +50,6 @@
     function getPicture() {
         $('.start').attr('disabled', 'disabled');
         socket.emit('get-picture');
-        $('#stream').attr('src', '');
     }
 
     socket.on('currentTime', function(str) {
