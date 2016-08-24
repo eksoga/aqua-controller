@@ -111,6 +111,8 @@ io.on('connection', function(socket) {
         var args = [
             "-w", "640",
             "-h", "480",
+            "-a", "4",
+            "-a", "%Y-%m-%d %X",
             "-o", "./temp/image_stream.jpg",
         ];
         proc = spawn('raspistill', args);
