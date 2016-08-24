@@ -73,7 +73,7 @@ function readSensors() {
 
 
 
-app.use('/', express.static(path.join(__dirname, 'stream')));
+app.use('/', express.static(path.join(__dirname, 'temp')));
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -106,9 +106,9 @@ io.on('connection', function(socket) {
         fs.watchFile('./temp/image_stream.jpg', function(current, previous) {
             fs.unwatchFile('./temp/image_stream.jpg');
             io.sockets.emit('picture', 'image_stream.jpg?_t=' + (Math.random() * 100000));
+            if (proc) proc.kill();
         });
         var args = [
-            "-n", "",
             "-w", "640",
             "-h", "480",
             "-o", "./temp/image_stream.jpg",
