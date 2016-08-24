@@ -124,7 +124,7 @@ io.on('connection', function(socket) {
         ];
 
         console.log('Start raspistill');
-        proc = spawn('raspistill', args);
+        proc = spawn('raspistill', args, { stdio: ['pipe', 'pipe', 'pipe'] });
         console.log('End raspistill');
         /*
         proc.on('exit', function () {
