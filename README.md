@@ -1,4 +1,4 @@
-pi_livestreaming
-================
+Aquarium controller based on Raspberry Pi + NodeJS
+==================================================
 
-[Raspberry Pi, Camera and Node.js – Live Streaming with Websockets #IoT](http://thejackalofjavascript.com/rpi-live-streaming)
+
