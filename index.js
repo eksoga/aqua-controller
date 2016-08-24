@@ -134,10 +134,11 @@ io.on('connection', function(socket) {
             { encoding: 'base64'},
             function (err, stdout, stderr) {
                 if (err) {
+                    console.log('This is error!!!');
                     throw err;
                 }
                 console.log(stdout);
-                io.sockets.emit('picture', data);
+                io.sockets.emit('picture', stdout);
             });
         /*
         proc.stdout.on('data', function(data) {
