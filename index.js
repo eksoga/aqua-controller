@@ -121,8 +121,9 @@ io.on('connection', function(socket) {
             //"-o", "./temp/image_stream.jpg",
             "-o", "-",
         ];
-        /*
+
         proc = spawn('raspistill', args);
+        /*
         proc.on('exit', function () {
             console.log("send picture");
             fs.readFile("./temp/image_stream.jpg", function(err, buffer){
@@ -130,6 +131,15 @@ io.on('connection', function(socket) {
             });
         });
         */
+        proc.stdout.on('data', function(data) {
+            console.log('stdout: ${data}');
+            //io.sockets.emit('picture', data);
+        });
+        proc.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+
+        /*
         var cmd = 'raspistill ' + args.join(' ');
         child_process.exec(cmd,
             { encoding: 'base64'},
@@ -142,10 +152,6 @@ io.on('connection', function(socket) {
                 //console.log(stdout);
                 io.sockets.emit('picture', stdout);
             });
-        /*
-        proc.stdout.on('data', function(data) {
-            io.sockets.emit('picture', data);
-        });
         */
   });
 
