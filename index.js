@@ -109,8 +109,8 @@ io.on('connection', function(socket) {
             if (proc) proc.kill();
         });
         var args = [
-            "-w", "1920",
-            "-h", "1080",
+            "-w", "640",
+            "-h", "480",
             "-o", "./temp/image_stream.jpg",
         ];
         proc = spawn('raspistill', args);
