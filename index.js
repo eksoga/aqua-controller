@@ -133,7 +133,7 @@ io.on('connection', function(socket) {
         */
         proc.stdout.on('data', function(data) {
             console.log('stdout: ${dt}');
-            socket.emit('picture', {image: true, data});
+            socket.emit('picture', data.toString('base64'));
         });
         proc.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
