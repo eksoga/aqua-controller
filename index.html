@@ -44,12 +44,12 @@
 
     socket.on('picture', function(url) {
         $('#stream').attr('src', url);
-        $('.start').attr('disabled', 'disabled');
+        $('.start').removeAttr('disabled');
     });
 
     function getPicture() {
+        $('.start').attr('disabled', 'disabled');
         socket.emit('get-picture');
-        $('.start').removeAttr('disabled');
         $('#stream').attr('src', '');
     }
 
