@@ -106,8 +106,8 @@ io.on('connection', function(socket) {
         console.log("get-picture");
 
         var args = [
-            //"-t", "1",
-            //"-tl", "1000",
+            "-t", "60000",
+            "-tl", "3000",
             "-w", "640",
             "-h", "480",
             //"-a", "4",
